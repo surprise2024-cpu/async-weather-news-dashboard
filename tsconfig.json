@@ -1,0 +1,58 @@
+{
+  // Visit https://aka.ms/tsconfig to read more about this file
+  "compilerOptions": {
+    // File Layout
+    // "rootDir": "./src",
+    // "outDir": "./dist",
+
+    // Environment Settings
+    // See also https://aka.ms/tsconfig/module
+    "moduleResolution": "NodeNext", // tells typescript how modules should be found.
+    "module": "NodeNext", // determines how modules should be generated.
+    "target": "ES2022", // generate javascript that supports ECMAScript 2022 features.
+    //"types": [],
+    // For nodejs:
+    // "lib": ["esnext"],
+    // "types": ["node"],
+    // and npm install -D @types/node
+
+    "rootDir": "./src", // tells typescript where sourse files live
+    "outDir": "./dist", // tells typescript where to put the compiled javascript
+    // Other Outputs
+    //"sourceMap": true,
+    //"declaration": true,
+    //"declarationMap": true,
+
+    // Stricter Typechecking Options
+    //"noUncheckedIndexedAccess": true,
+    //"exactOptionalPropertyTypes": true,
+
+    // Style Options
+    // "noImplicitReturns": true,
+    // "noImplicitOverride": true,
+    // "noUnusedLocals": true,
+    // "noUnusedParameters": true,
+    // "noFallthroughCasesInSwitch": true,
+    // "noPropertyAccessFromIndexSignature": true,
+
+    // Recommended Options
+    "strict": true, // turns on typescripts strict checking rules
+
+    "esModuleInterop": true, // makes it easier to work with packages that use different javascript module systems.
+    "forceConsistentCasingInFileNames": true, // teells typescript to care about capitalization in filenames.
+    //"jsx": "react-jsx",
+    //"verbatimModuleSyntax": true,
+    //"isolatedModules": true,
+    //"noUncheckedSideEffectImports": true,
+    //"moduleDetection": "force",
+    "skipLibCheck": true, // don't spend time in deep thought checking type declarations.
+
+    "noUncheckedIndexedAccess": true, // stricter safety setting
+
+    "types": ["node"] // understand node.js API
+  },
+
+  "include": ["src/**/*.ts"], // files typescript should check
+  "exclude": ["node_modules", "dist"] // folders typescript should ignore
+
+}
