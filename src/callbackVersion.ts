@@ -15,6 +15,13 @@ import type {
     WeatherData
 } from './types'
 
+import {
+    displayDashboard,
+    displayError
+} from './display'
+
+
+
 function getWeather(
     callback: (error: Error | null, data?: WeatherData) => void
 ): void {
@@ -171,6 +178,7 @@ function getNews(
     });
 }
 
+// Testing news callback function
 {/*getNews((error, posts) => {
 
     if (error) {
@@ -206,8 +214,8 @@ getWeather((weatherError, weather) => {
 
     if (weatherError) {
 
-        console.error(
-            `[ERROR] Unable to fetch weather: ${weatherError.message}`
+        displayError(
+            `Unable to fetch weather: ${weatherError.message}`
         );
 
         return;
@@ -215,7 +223,7 @@ getWeather((weatherError, weather) => {
 
     if (!weather) {
 
-        console.error(
+        displayError(
             `[ERROR] Weather data was not returned.`
         );
 
@@ -226,8 +234,8 @@ getWeather((weatherError, weather) => {
 
         if (newsError) {
 
-            console.error(
-                `[ERROR] Unable to fetch news: ${newsError.message}`
+            displayError(
+                `Unable to fetch news: ${newsError.message}`
             );
 
             return;
@@ -235,35 +243,19 @@ getWeather((weatherError, weather) => {
 
         if (!posts) {
 
-            console.error(
-                '[Error] News data was not returned.'
+            displayError(
+                'News data was not returned.'
             );
 
             return;
         }
 
-        console.log('\n===============================');
-        console.log('ASYNC WEATHER & NEWS DASHBOARD');
-        console.log('===============================');
+        displayDashboard(
+            LOCATION_NAME,
+            weather,
+            posts
+        );
 
-        console.log('\nWEATHER DATA');
-        console.log('===============================');
-
-        console.log(`Location: ${LOCATION_NAME}`);
-        console.log(`Temperature: ${weather.temperature}°C`);
-        console.log(`Feels Like: ${weather.apparentTemperature}°C`);
-
-        console.log(`Wind speed: ${weather.windSpeed} km/h`);
-        console.log(`Weather Code: ${weather.weatherCode}`);
-
-        console.log('\nNEWS HEADLINES');
-        console.log('===============================');
-        posts.forEach((post, index) => {
-            console.log(`${index + 1}. ${post.title}`);
-        });
-
-        console.log('\n===============================');
-        console.log('CALLBACK VERSION COMPLETED.');
-        console.log('===============================');
     });
+    
 });
