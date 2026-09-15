@@ -140,7 +140,7 @@ function getNews(
                 ) {
                     callback(
                         new Error(
-                            `News request faild with status code: ${response.statusCode}`
+                            `News request failed with status code: ${response.statusCode}`
                         )
                     );
 
@@ -159,7 +159,7 @@ function getNews(
                 } else {
 
                     callback(
-                        new Error('Unknown error occurred while pasrsing news data.')
+                        new Error('Unknown error occurred while parsing news data.')
                     );
 
                 }
