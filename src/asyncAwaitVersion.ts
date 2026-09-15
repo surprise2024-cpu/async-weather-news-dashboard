@@ -82,3 +82,64 @@ function getWeather(): Promise<WeatherData> {
 
     });
 }
+
+function getNews(): Promise<NewsPost[]> {
+
+    return new Promise((resolve, reject) => {
+
+        console.log('Fetching news headlines...');
+        
+        https.get(NEWS_API_URL, (response) => {
+    
+            let data = "";
+    
+            response.on('data', (chunk) => {
+                data += chunk;
+            });
+    
+            response.on('end', () => {
+    
+                try {
+    
+                    if (
+                        response.statusCode === undefined ||
+                        response.statusCode < 200 ||
+                        response.statusCode >= 300
+                    ) {
+                        reject(
+                            new Error(
+                                `News request failed with status code: ${response.statusCode}`
+                            )
+                        );
+    
+                        return;
+                    }
+    
+                    const parsedData: NewsApiResponse = JSON.parse(data);
+    
+                    resolve(parsedData.posts);
+    
+                } catch (error) {
+                    if (error instanceof Error) {
+    
+                        reject(error);
+    
+                    } else {
+    
+                        reject(
+                            new Error('Unknown error occurred while parsing news data.')
+                        );
+    
+                    }
+                }
+            });
+
+        }).on('error', (error) => {
+    
+            reject(error);
+            
+        });
+
+    });
+
+}
