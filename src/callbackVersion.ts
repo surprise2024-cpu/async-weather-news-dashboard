@@ -68,7 +68,7 @@ function getWeather(
                 } else {
 
                     callback(
-                        new Error('Unknown error occurred while pasrsing weather data.')
+                        new Error('Unknown error occurred while parsing weather data.')
                     );
 
                 }
