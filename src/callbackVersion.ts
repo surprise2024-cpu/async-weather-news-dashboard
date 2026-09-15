@@ -201,6 +201,7 @@ function getNews(
 
 });*/}
 
+// callback hell
 getWeather((weatherError, weather) => {
 
     if (weatherError) {
@@ -245,7 +246,7 @@ getWeather((weatherError, weather) => {
         console.log('ASYNC WEATHER & NEWS DASHBOARD');
         console.log('===============================');
 
-        console.log('\nNEWS HEADLINES');
+        console.log('\nWEATHER DATA');
         console.log('===============================');
 
         console.log(`Location: ${LOCATION_NAME}`);
