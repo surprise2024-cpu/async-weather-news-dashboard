@@ -15,6 +15,11 @@ import type {
     WeatherData
 } from './types'
 
+import {
+    displayDashboard,
+    displayError
+} from './display'
+
 function getWeather(): Promise<WeatherData> {
 
     return new Promise((resolve, reject) => {
@@ -195,25 +200,12 @@ function getNews(): Promise<NewsPost[]> {
         console.log('PROMISE CHAINING DEMONSTRATION');
         console.log('======================================');
 
-        console.log('\nWEATHER');
-        console.log('--------------------------------------');
+        displayDashboard(
+            LOCATION_NAME,
+            weather,
+            posts
+        );
 
-        console.log(`Temperature: ${weather.temperature}°C`);
-        console.log(`Feels Like: ${weather.apparentTemperature}°C`);
-        console.log(`Wind Speed: ${weather.windSpeed} km/h`);
-        console.log(`Weather Code: ${weather.weatherCode}`);
-
-        console.log('\nNEWS HEADLINES');
-        console.log('--------------------------------------');
-
-        posts.forEach((post, index) => {
-
-            console.log(
-                `${index + 1}. ${post.title}`
-            );
-        });
-
-        console.log('\n=======================================');
         console.log('PROMISE CHAINING COMPLETED');
         console.log('=======================================');
 
@@ -222,11 +214,11 @@ function getNews(): Promise<NewsPost[]> {
 
         if (error instanceof Error) {
 
-            console.error(`[ERROR]: ${error.message}`);
+            displayError(error.message`);
         } else {
 
-            console.error(
-                '[ERROR] Unknown error occurred.'
+            displayError(
+                'Unknown error occurred.'
             );
         }
     });*/}
@@ -245,46 +237,31 @@ function runPromiseAllExample(): void {
     ])
     .then(([ weather, posts ]) => {
 
-        console.log('\nWEATHER');
-        console.log('--------------------------------------');
-
-        console.log(`Temperature: ${weather.temperature}°C`);
-        console.log(`Feels Like: ${weather.apparentTemperature}°C`);
-        console.log(`Wind Speed: ${weather.windSpeed} km/h`);
-        console.log(`Weather Code: ${weather.weatherCode}`);
-
-        console.log('\nNEWS HEADLINES');
-        console.log('--------------------------------------');
-
-        posts.forEach((post, index) => {
-
-            console.log(
-                `${index + 1}. ${post.title}`
-            );
-        });
-
-        console.log('\n=======================================');
-        console.log('PROMISE.ALL VERSION COMPLETED');
-        console.log('=======================================');
+        displayDashboard(
+            LOCATION_NAME,
+            weather,
+            posts
+        );
 
     })
     .catch((error) => {
 
         if (error instanceof Error) {
 
-            console.error(`[ERROR]: ${error.message}`);
+            displayError(error.message);
 
         } else {
 
-            console.error(
-                '[ERROR] Unknown error occurred.'
+            displayError(
+                'Unknown error occurred.'
             );
 
         }
     });
 }
 
-//runPromiseAllExample();
+// promise.all function testing
+runPromiseAllExample();
 
 // PROMISE RACE DEMONSTRATION
 function runPromiseRaceExample(): void {
@@ -332,16 +309,18 @@ function runPromiseRaceExample(): void {
 
         if (error instanceof Error) {
 
-            console.error(`[ERROR]: ${error.message}`);
+            displayError(error.message);
 
         } else {
 
-            console.error(
-                '[ERROR] Unknown error occurred.'
+            displayError(
+                'Unknown error occurred.'
             );
 
         }
+
     });
+
 }
 
 runPromiseRaceExample();
