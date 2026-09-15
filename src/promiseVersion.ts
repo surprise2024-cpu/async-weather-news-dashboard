@@ -84,7 +84,7 @@ function getWeather(): Promise<WeatherData> {
 }
 
 // temporary test for the function
-getWeather()
+{/*getWeather()
     .then((weather) => {
 
         console.log('\nWEATHER');
@@ -108,4 +108,240 @@ getWeather()
                 '[ERROR] Unknown weather error occurred.'
             );
         }
+    });*/}
+
+// Weather domain below
+function getNews(): Promise<NewsPost[]> {
+
+    return new Promise((resolve, reject) => {
+
+        console.log('Fetching news headlines...');
+        
+        https.get(NEWS_API_URL, (response) => {
+    
+            let data = "";
+    
+            response.on('data', (chunk) => {
+                data += chunk;
+            });
+    
+            response.on('end', () => {
+    
+                try {
+    
+                    if (
+                        response.statusCode === undefined ||
+                        response.statusCode < 200 ||
+                        response.statusCode >= 300
+                    ) {
+                        reject(
+                            new Error(
+                                `News request failed with status code: ${response.statusCode}`
+                            )
+                        );
+    
+                        return;
+                    }
+    
+                    const parsedData: NewsApiResponse = JSON.parse(data);
+    
+                    resolve(parsedData.posts);
+    
+                } catch (error) {
+                    if (error instanceof Error) {
+    
+                        reject(error);
+    
+                    } else {
+    
+                        reject(
+                            new Error('Unknown error occurred while parsing news data.')
+                        );
+    
+                    }
+                }
+            });
+
+        }).on('error', (error) => {
+    
+            reject(error);
+            
+        });
+
     });
+
+}
+
+{/*getWeather()
+    .then((weather) => {
+
+        console.log('Weather request completed');
+
+        return getNews()
+            .then((posts) => {
+
+                return {
+                    weather,
+                    posts
+                };
+            });
+
+        
+
+    })
+    .then(({ weather, posts }) => {
+
+        console.log('\n=======================================');
+        console.log('PROMISE CHAINING DEMONSTRATION');
+        console.log('======================================');
+
+        console.log('\nWEATHER');
+        console.log('--------------------------------------');
+
+        console.log(`Temperature: ${weather.temperature}°C`);
+        console.log(`Feels Like: ${weather.apparentTemperature}°C`);
+        console.log(`Wind Speed: ${weather.windSpeed} km/h`);
+        console.log(`Weather Code: ${weather.weatherCode}`);
+
+        console.log('\nNEWS HEADLINES');
+        console.log('--------------------------------------');
+
+        posts.forEach((post, index) => {
+
+            console.log(
+                `${index + 1}. ${post.title}`
+            );
+        });
+
+        console.log('\n=======================================');
+        console.log('PROMISE CHAINING COMPLETED');
+        console.log('=======================================');
+
+    })
+    .catch((error) => {
+
+        if (error instanceof Error) {
+
+            console.error(`[ERROR]: ${error.message}`);
+        } else {
+
+            console.error(
+                '[ERROR] Unknown error occurred.'
+            );
+        }
+    });*/}
+
+function runPromiseAllExample(): void {
+
+    console.log('\n=======================================');
+    console.log('PROMISE.ALL DEMONSTRATION');
+    console.log('======================================');
+
+    console.log('\nFetching weather and news at the same time...');
+
+    Promise.all([
+        getWeather(),
+        getNews()
+    ])
+    .then(([ weather, posts ]) => {
+
+        console.log('\nWEATHER');
+        console.log('--------------------------------------');
+
+        console.log(`Temperature: ${weather.temperature}°C`);
+        console.log(`Feels Like: ${weather.apparentTemperature}°C`);
+        console.log(`Wind Speed: ${weather.windSpeed} km/h`);
+        console.log(`Weather Code: ${weather.weatherCode}`);
+
+        console.log('\nNEWS HEADLINES');
+        console.log('--------------------------------------');
+
+        posts.forEach((post, index) => {
+
+            console.log(
+                `${index + 1}. ${post.title}`
+            );
+        });
+
+        console.log('\n=======================================');
+        console.log('PROMISE.ALL COMPLETED');
+        console.log('=======================================');
+
+    })
+    .catch((error) => {
+
+        if (error instanceof Error) {
+
+            console.error(`[ERROR]: ${error.message}`);
+
+        } else {
+
+            console.error(
+                '[ERROR] Unknown error occurred.'
+            );
+
+        }
+    });
+}
+
+//runPromiseAllExample();
+
+// PROMISE RACE DEMONSTRATION
+function runPromiseRaceExample(): void {
+
+    console.log('\n=======================================');
+    console.log('PROMISE.RACE DEMONSTRATION');
+    console.log('======================================');
+
+    console.log('\nFetching weather and news...');
+
+    const weatherPromise = getWeather().then((weather) => {
+
+        return {
+
+            source: 'Weather',
+            data: weather
+        };
+    });
+
+    const newsPromise = getNews().then((posts) => {
+
+        return {
+            
+            source: 'News',
+            data: posts
+        };
+    });
+
+    Promise.race([
+        weatherPromise,
+        newsPromise
+    ])
+    .then((result) => {
+
+        console.log('\Fastest response: ');
+        
+        console.log(`${result.source} responded first!`);
+        
+        console.log('\n======================================');
+        console.log('\nPROMISE.RACE COMPLETED');
+        console.log('======================================');
+
+    })
+    .catch((error) => {
+
+        if (error instanceof Error) {
+
+            console.error(`[ERROR]: ${error.message}`);
+
+        } else {
+
+            console.error(
+                '[ERROR] Unknown error occurred.'
+            );
+
+        }
+    });
+}
+
+runPromiseRaceExample();
