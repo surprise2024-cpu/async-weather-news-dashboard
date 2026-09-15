@@ -243,6 +243,9 @@ function runPromiseAllExample(): void {
             posts
         );
 
+        console.log('PROMISE CHAINING COMPLETED');
+        console.log('======================================');
+
     })
     .catch((error) => {
 

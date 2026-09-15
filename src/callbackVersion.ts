@@ -224,7 +224,7 @@ getWeather((weatherError, weather) => {
     if (!weather) {
 
         displayError(
-            `[ERROR] Weather data was not returned.`
+            `Weather data was not returned.`
         );
 
         return;
@@ -256,6 +256,9 @@ getWeather((weatherError, weather) => {
             posts
         );
 
+        console.log('CALLBACK VERSION COMPLETED');
+        console.log('======================================');
+
     });
-    
+
 });

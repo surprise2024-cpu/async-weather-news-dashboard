@@ -14,6 +14,7 @@ import type {
     WeatherApiResponse,
     WeatherData
 } from './types'
+import { displayDashboard, displayError } from './display';
 
 function getWeather(): Promise<WeatherData> {
 
@@ -158,38 +159,24 @@ async function runAsyncAwaitExample(): Promise<void> {
             getNews()
         ]);
 
-        console.log('\nWEATHER');
-        console.log('--------------------------------------');
+        displayDashboard(
+            LOCATION_NAME,
+            weather,
+            posts
+        );
 
-        console.log(`\nLocation: ${LOCATION_NAME}°C`);
-        console.log(`Temperature: ${weather.temperature}°C`);
-        console.log(`Feels Like: ${weather.apparentTemperature}°C`);
-        console.log(`Wind Speed: ${weather.windSpeed} km/h`);
-        console.log(`Weather Code: ${weather.weatherCode}`);
-
-        console.log('\nNEWS HEADLINES');
-        console.log('--------------------------------------');
-
-        posts.forEach((post, index) => {
-
-            console.log(
-                `${index + 1}. ${post.title}`
-            );
-        });
-
-        console.log('\n=======================================');
         console.log('ASYNC/AWAIT VERSION COMPLETED');
         console.log('=======================================');
 
     } catch (error) {
         if (error instanceof Error) {
 
-            console.error(`[ERROR]: ${error.message}`);
+            displayError(error.message);
 
         } else {
 
-            console.error(
-                '[ERROR] Unknown error occurred.'
+            displayError(
+                'Unknown error occurred.'
             );
 
         }
