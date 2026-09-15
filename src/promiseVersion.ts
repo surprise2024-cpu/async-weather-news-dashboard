@@ -319,7 +319,7 @@ function runPromiseRaceExample(): void {
     ])
     .then((result) => {
 
-        console.log('\Fastest response: ');
+        console.log('\nFastest response: ');
         
         console.log(`${result.source} responded first!`);
         
