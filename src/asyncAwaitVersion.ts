@@ -19,7 +19,7 @@ function getWeather(): Promise<WeatherData> {
 
     return new Promise((resolve, reject) => {
 
-        console.log(`Fetching weather for ${LOCATION_NAME}...`);
+        console.log(`\nFetching weather for ${LOCATION_NAME}...`);
     
         https.get(WEATHER_API_URL, (response) => {
     
@@ -195,3 +195,5 @@ async function runAsyncAwaitExample(): Promise<void> {
         }
     }
 }
+
+runAsyncAwaitExample();
