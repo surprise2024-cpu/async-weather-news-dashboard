@@ -264,7 +264,7 @@ function runPromiseAllExample(): void {
         });
 
         console.log('\n=======================================');
-        console.log('PROMISE.ALL COMPLETED');
+        console.log('PROMISE.ALL VERSION COMPLETED');
         console.log('=======================================');
 
     })

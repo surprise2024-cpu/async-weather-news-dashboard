@@ -143,3 +143,55 @@ function getNews(): Promise<NewsPost[]> {
     });
 
 }
+
+// ASYNC/AWAIT DEMONSTRATION
+async function runAsyncAwaitExample(): Promise<void> {
+
+    console.log('\n=======================================');
+    console.log('ASYNC/AWAIT DEMONSTRATION');
+    console.log('======================================');
+
+    try {
+
+        const [weather, posts] = await Promise.all([
+            getWeather(),
+            getNews()
+        ]);
+
+        console.log('\nWEATHER');
+        console.log('--------------------------------------');
+
+        console.log(`\nLocation: ${LOCATION_NAME}°C`);
+        console.log(`Temperature: ${weather.temperature}°C`);
+        console.log(`Feels Like: ${weather.apparentTemperature}°C`);
+        console.log(`Wind Speed: ${weather.windSpeed} km/h`);
+        console.log(`Weather Code: ${weather.weatherCode}`);
+
+        console.log('\nNEWS HEADLINES');
+        console.log('--------------------------------------');
+
+        posts.forEach((post, index) => {
+
+            console.log(
+                `${index + 1}. ${post.title}`
+            );
+        });
+
+        console.log('\n=======================================');
+        console.log('ASYNC/AWAIT VERSION COMPLETED');
+        console.log('=======================================');
+
+    } catch (error) {
+        if (error instanceof Error) {
+
+            console.error(`[ERROR]: ${error.message}`);
+
+        } else {
+
+            console.error(
+                '[ERROR] Unknown error occurred.'
+            );
+
+        }
+    }
+}

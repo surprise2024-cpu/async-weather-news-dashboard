@@ -263,7 +263,7 @@ getWeather((weatherError, weather) => {
         });
 
         console.log('\n===============================');
-        console.log('Callback version completed.');
+        console.log('CALLBACK VERSION COMPLETED.');
         console.log('===============================');
     });
 });
