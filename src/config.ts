@@ -1,7 +1,8 @@
-// storing weather data from API into variable
+// storing weather data from API into variable based on a given location
 export const GEOCODING_API_URL = 
     "https://geocoding-api.open-meteo.com/v1/search";
 
+// storing weather data from API into variable
 export const WEATHER_API_URL = 
     "https://api.open-meteo.com/v1/forecast";
 
