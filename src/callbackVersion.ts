@@ -19,7 +19,8 @@ import type {
 
 import {
     displayDashboard,
-    displayError
+    displayError,
+    getWeatherCondition
 } from './display'
 
 import {
