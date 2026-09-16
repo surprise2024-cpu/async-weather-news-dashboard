@@ -131,7 +131,7 @@ function getWeather(
     const url = `${WEATHER_API_URL}` +
     `?latitude=${latitude}` +
     `&longitude=${longitude}` +
-    `&current=temperature_2m, apparent_temperature,wind_speed_10m,weather_code`;
+    `&current=temperature_2m,apparent_temperature,wind_speed_10m,weather_code`;
 
 
     https.get(url, (response) => {
@@ -399,11 +399,6 @@ askForMyCityCallback((city) => {
 
                             return;
                         }
-
-
-                        // ===================================
-                        // CHANGED: Dynamic location name
-                        // ===================================
 
                         displayDashboard(
                             location.name,
