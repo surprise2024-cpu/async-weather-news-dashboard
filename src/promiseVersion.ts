@@ -27,6 +27,8 @@ import {
 } from './input'
 import { get } from 'http';
 
+
+// retrieving specified location data
 function getCoordinates(
     city: string
 ): Promise<GeocodingResult> {
@@ -119,6 +121,7 @@ function getCoordinates(
     
 }
 
+// retrieving weather data
 function getWeather(
     latitude: number,
     longitude: number,
@@ -195,6 +198,7 @@ function getWeather(
     });
 }
 
+// retrieving news data
 function getNews(): Promise<NewsPost[]> {
 
     return new Promise((resolve, reject) => {
@@ -256,6 +260,7 @@ function getNews(): Promise<NewsPost[]> {
 
 }
 
+// Promise chaining
 function runPromiseChainExample(
     location: GeocodingResult
 ): Promise<void> {
@@ -285,8 +290,6 @@ function runPromiseChainExample(
     })
     .then(({ weather, posts }) => {
 
-        
-
         displayDashboard(
             location.name,
             weather,
@@ -315,7 +318,7 @@ function runPromiseChainExample(
 
 function runPromiseAllExample(
     location: GeocodingResult
-): void {
+): Promise<void> {
 
     console.log('\n=======================================');
     console.log('PROMISE.ALL DEMONSTRATION');
@@ -323,7 +326,8 @@ function runPromiseAllExample(
 
     console.log('\nFetching weather and news at the same time...');
 
-    Promise.all([
+    // (return) stops the overlapping of data
+    return Promise.all([
         getWeather(
             location.latitude,
             location.longitude,
@@ -350,7 +354,7 @@ function runPromiseAllExample(
 // PROMISE RACE DEMONSTRATION
 function runPromiseRaceExample(
     location: GeocodingResult
-): void {
+): Promise<void> {
 
     console.log('\n=======================================');
     console.log('PROMISE.RACE DEMONSTRATION');
@@ -380,7 +384,8 @@ function runPromiseRaceExample(
         };
     });
 
-    Promise.race([
+    // (return) stops overlapping of data
+    return Promise.race([
         weatherPromise,
         newsPromise
     ])
@@ -414,7 +419,7 @@ askForMyCity()
 
         console.log(
             `Location found: ${location.name}` +
-            `${location.country ? `, ${location.name}`: ''} `
+            `${location.country ? `, ${location.country}`: ''} `
         );
 
         // normal chaining demo

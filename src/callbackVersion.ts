@@ -80,16 +80,17 @@ function getCoordinates(
                         return;
                     }
 
-                    callback(null, location);
+                    callback(null, location); // everything worked, here' the location
 
                 } catch (error) {
 
                     if (error instanceof Error) {
-
+                        // if the error is an actaul javascript error then send it to the callback 
                         callback(error);
 
                     } else {
 
+                        // if the error returned is unknown, use this one
                         callback(
                             new Error(
                                 'Unable to get location data.'
@@ -103,6 +104,7 @@ function getCoordinates(
 
         request.setTimeout(10_000, () => {
 
+            // if there is no response after 10s has passed, stop the process and use this new error message.
             request.destroy(
                 new Error('Location request timed out.')
             );
@@ -110,6 +112,7 @@ function getCoordinates(
         
         request.on('error', (error) => {
 
+            //if there is a network, server etc, use this error message 
             callback(
                 new Error(
                     `Unable to retrieve location: ${error.message}`
@@ -161,6 +164,7 @@ function getWeather(
                     return;
                 }
 
+                // converts the weather JSON into an object
                 const parseData: WeatherApiResponse = JSON.parse(data);
 
                 const weather: WeatherData = {
@@ -171,7 +175,7 @@ function getWeather(
                     weatherCode: parseData.current.weather_code
                 };
 
-                callback(null, weather);
+                callback(null, weather); // weather request succeeded, here's the weather
 
             } catch (error) {
 
@@ -189,6 +193,7 @@ function getWeather(
             }
         });
 
+        // if the http request fails, send an th error to the callback
     }).on('error', (error) => {
 
         callback(error);

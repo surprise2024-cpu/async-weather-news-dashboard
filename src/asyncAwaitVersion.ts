@@ -25,7 +25,6 @@ import {
     displayDashboard, 
     displayError 
 } from './display';
-import { request } from 'http';
 
 function getCoordinates(
     city: string
@@ -268,18 +267,18 @@ async function runAsyncAwaitExample(): Promise<void> {
         const city = await askForMyCity();
 
         if (!city) {
-            displayError('PLease enter a city.');
+            displayError('Please enter a city.');
 
             return;
         }
 
-        console.log(`\nSearch or ${city}...`);
+        console.log(`\nSearching for ${city}...`);
 
         const location = await getCoordinates(city);
 
         console.log(
             `Location found: ${location.name}` +
-            `${location.country ? `, ${location.name}`: ''} `
+            `${location.country ? `, ${location.country}`: ''} `
         );
 
         const [weather, posts] = await Promise.all([
