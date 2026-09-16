@@ -94,6 +94,6 @@ export function getWeatherCondition(code: number): string {
     }
 
     // look inside the conditions object using the weather code received.
-    return conditions[code] ?? 'Unknow weather condition';
+    return conditions[code] ?? 'Unknown weather condition';
     // try to find the weather condition, if it doesn't exist return (unknown weather condition)
 }
