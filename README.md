@@ -89,6 +89,10 @@ async-weather-news-dashboard/
 
 ```
 
-### File Responsibilities
+## File Responsibilities
 
+- `callbackVersion.ts` - Callback-based weather and news implementation.
+- `promiseVersion.ts` - Promise chaining, `Promise.all()`, and `Promise.race()`.
+- `asyncAwaitVersion.ts` - Async/Await implementation using `try...catch`.
+- `config.ts` - Stores API URLs and locati
 

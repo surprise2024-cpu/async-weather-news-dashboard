@@ -25,17 +25,118 @@ import {
     displayDashboard, 
     displayError 
 } from './display';
+import { request } from 'http';
 
-function getWeather(): Promise<WeatherData> {
+function getCoordinates(
+    city: string
+): Promise<GeocodingResult> {
 
     return new Promise((resolve, reject) => {
 
-        console.log(`\nFetching weather for ${LOCATION_NAME}...`);
+        const url = `${GEOCODING_API_URL}?name=${encodeURIComponent(city)}&count=1&language=en&format=json`;
+
+        const request = https.get(url, (response) => {
+
+            let data = '';
+
+            response.setEncoding('utf8');
+
+            response.on('data', (chunk) => {
+                data += chunk;
+
+            });
+
+            response.on('end', () => {
+
+                try {
     
-        https.get(WEATHER_API_URL, (response) => {
+                    if (
+                        response.statusCode === undefined ||
+                        response.statusCode < 200 ||
+                        response.statusCode >= 300
+                    ) {
+                        reject(
+                            new Error(
+                                `Location request failed with status code: ${response.statusCode}`
+                            )
+                        );
+    
+                        return;
+                    }
+    
+                    const parseData: GeocodingApiResponse = JSON.parse(data);
+    
+                    const location = parseData.results?.[0];
+
+                    if (!location) {
+
+                        reject(
+                            new Error(
+                                `Could not find a location matching '${city}'.`
+                            )
+                        );
+
+                        return;
+                    }
+
+                    resolve(location)
+
+                } catch (error) {
+
+                    if (error instanceof Error) {
+
+                        reject(error);
+
+                    } else {
+
+                        reject(
+                            new Error(
+                                'Unable to get location data.'
+                            )
+                        );
+                    }
+                }
+            });
+
+        });
+
+        request.setTimeout(10_000, () => {
+
+            request.destroy(
+                new Error('Location request timed out.')
+            );
+        });
+        
+        request.on('error', (error) => {
+
+            reject(
+                new Error(
+                    `Unable to retrieve location: ${error.message}`
+                )
+            );
+        });
+    });       
+    
+}
+
+function getWeather(
+    latitude: number,
+    longitude: number
+): Promise<WeatherData> {
+
+    return new Promise((resolve, reject) => {
+
+        console.log(`\nFetching weather...`);
+
+        const url = `${WEATHER_API_URL}?latitude=${latitude}` + 
+            `&longitude=${longitude}` +
+            `&current=temperature_2m,apparent_temperature,wind_speed_10m,weather_code`;
+    
+    
+        https.get(url, (response) => {
     
             let data = '';
-    
+
             response.on('data', (chunk) => {
                 data += chunk;
             });
@@ -164,13 +265,33 @@ async function runAsyncAwaitExample(): Promise<void> {
 
     try {
 
+        const city = await askForMyCity();
+
+        if (!city) {
+            displayError('PLease enter a city.');
+
+            return;
+        }
+
+        console.log(`\nSearch or ${city}...`);
+
+        const location = await getCoordinates(city);
+
+        console.log(
+            `Location found: ${location.name}` +
+            `${location.country ? `, ${location.name}`: ''} `
+        );
+
         const [weather, posts] = await Promise.all([
-            getWeather(),
+            getWeather(
+                location.latitude,
+                location.longitude
+            ),
             getNews()
         ]);
 
         displayDashboard(
-            LOCATION_NAME,
+            location.name,
             weather,
             posts
         );
