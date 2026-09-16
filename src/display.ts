@@ -6,6 +6,7 @@ import {
     NEWS_API_URL
 } from './config'
 
+// imports are only being used as types, not actual JavaScript values.
 import type {
     NewsApiResponse,
     NewsPost,
