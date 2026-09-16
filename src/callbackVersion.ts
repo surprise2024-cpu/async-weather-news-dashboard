@@ -315,7 +315,7 @@ function getNews(
 
 });*/}
 
-// callback hell
+// testing all functions
 askForMyCityCallback((city) => {
 
     if (!city) {
