@@ -4,7 +4,7 @@ import * as https from 'https';
 
 import {
     WEATHER_API_URL,
-    LOCATION_NAME,
+    GEOCODING_API_URL,
     NEWS_API_URL
 } from './config'
 
@@ -12,7 +12,9 @@ import type {
     NewsApiResponse,
     NewsPost,
     WeatherApiResponse,
-    WeatherData
+    WeatherData,
+    GeocodingApiResponse,
+    GeocodingResult
 } from './types'
 
 import {
@@ -20,13 +22,118 @@ import {
     displayError
 } from './display'
 
-function getWeather(): Promise<WeatherData> {
+import {
+    askForMyCity
+} from './input'
+import { get } from 'http';
+
+function getCoordinates(
+    city: string
+): Promise<GeocodingResult> {
 
     return new Promise((resolve, reject) => {
 
-        console.log(`Fetching weather for ${LOCATION_NAME}...`);
+        const url = `${GEOCODING_API_URL}?name=${encodeURIComponent(city)}&count=1&language=en&format=json`;
+
+        const request = https.get(url, (response) => {
+
+            let data = '';
+
+            response.setEncoding('utf8');
+
+            response.on('data', (chunk) => {
+                data += chunk;
+
+            });
+
+            response.on('end', () => {
+
+                try {
     
-        https.get(WEATHER_API_URL, (response) => {
+                    if (
+                        response.statusCode === undefined ||
+                        response.statusCode < 200 ||
+                        response.statusCode >= 300
+                    ) {
+                        reject(
+                            new Error(
+                                `Location request failed with status code: ${response.statusCode}`
+                            )
+                        );
+    
+                        return;
+                    }
+    
+                    const parseData: GeocodingApiResponse = JSON.parse(data);
+    
+                    const location = parseData.results?.[0];
+
+                    if (!location) {
+
+                        reject(
+                            new Error(
+                                `Could not find a location matching '${city}'.`
+                            )
+                        );
+
+                        return;
+                    }
+
+                    resolve(location)
+
+                } catch (error) {
+
+                    if (error instanceof Error) {
+
+                        reject(error);
+
+                    } else {
+
+                        reject(
+                            new Error(
+                                'Unable to get location data.'
+                            )
+                        );
+                    }
+                }
+            });
+
+        });
+
+        request.setTimeout(10_000, () => {
+
+            request.destroy(
+                new Error('Location request timed out.')
+            );
+        });
+        
+        request.on('error', (error) => {
+
+            reject(
+                new Error(
+                    `Unable to retrieve location: ${error.message}`
+                )
+            );
+        });
+    });       
+    
+}
+
+function getWeather(
+    latitude: number,
+    longitude: number,
+    locationName: string
+): Promise<WeatherData> {
+
+    return new Promise((resolve, reject) => {
+
+        console.log(`Fetching weather for ${locationName}...`);
+    
+        const url = `${WEATHER_API_URL}?latitude=${latitude}` + 
+            `&longitude=${longitude}` +
+            `&current=temperature_2m,apparent_temperature,wind_speed_10m,weather_code`;
+
+        https.get(url, (response) => {
     
             let data = '';
     
@@ -115,7 +222,7 @@ function getWeather(): Promise<WeatherData> {
         }
     });*/}
 
-// Weather domain below
+
 function getNews(): Promise<NewsPost[]> {
 
     return new Promise((resolve, reject) => {
@@ -177,7 +284,19 @@ function getNews(): Promise<NewsPost[]> {
 
 }
 
-{/*getWeather()
+function runPromiseChainExample(
+    location: GeocodingResult
+): Promise<void> {
+
+    console.log('\n=======================================');
+    console.log('PROMISE CHAINING DEMONSTRATION');
+    console.log('======================================');
+
+    return getWeather(
+        location.latitude,
+        location.longitude,
+        location.name
+    )
     .then((weather) => {
 
         console.log('Weather request completed');
@@ -191,17 +310,13 @@ function getNews(): Promise<NewsPost[]> {
                 };
             });
 
-        
-
     })
     .then(({ weather, posts }) => {
 
-        console.log('\n=======================================');
-        console.log('PROMISE CHAINING DEMONSTRATION');
-        console.log('======================================');
+        
 
         displayDashboard(
-            LOCATION_NAME,
+            location.name,
             weather,
             posts
         );
@@ -214,16 +329,21 @@ function getNews(): Promise<NewsPost[]> {
 
         if (error instanceof Error) {
 
-            displayError(error.message`);
+            displayError(error.message);
         } else {
 
             displayError(
                 'Unknown error occurred.'
             );
         }
-    });*/}
+    });
 
-function runPromiseAllExample(): void {
+}
+    
+
+function runPromiseAllExample(
+    location: GeocodingResult
+): void {
 
     console.log('\n=======================================');
     console.log('PROMISE.ALL DEMONSTRATION');
@@ -232,13 +352,17 @@ function runPromiseAllExample(): void {
     console.log('\nFetching weather and news at the same time...');
 
     Promise.all([
-        getWeather(),
+        getWeather(
+            location.latitude,
+            location.longitude,
+            location.name
+        ),
         getNews()
     ])
     .then(([ weather, posts ]) => {
 
         displayDashboard(
-            LOCATION_NAME,
+            location.name,
             weather,
             posts
         );
@@ -246,28 +370,15 @@ function runPromiseAllExample(): void {
         console.log('PROMISE CHAINING COMPLETED');
         console.log('======================================');
 
-    })
-    .catch((error) => {
-
-        if (error instanceof Error) {
-
-            displayError(error.message);
-
-        } else {
-
-            displayError(
-                'Unknown error occurred.'
-            );
-
-        }
     });
+
 }
 
-// promise.all function testing
-runPromiseAllExample();
 
 // PROMISE RACE DEMONSTRATION
-function runPromiseRaceExample(): void {
+function runPromiseRaceExample(
+    location: GeocodingResult
+): void {
 
     console.log('\n=======================================');
     console.log('PROMISE.RACE DEMONSTRATION');
@@ -275,7 +386,11 @@ function runPromiseRaceExample(): void {
 
     console.log('\nFetching weather and news...');
 
-    const weatherPromise = getWeather().then((weather) => {
+    const weatherPromise = getWeather(
+        location.latitude,
+        location.longitude,
+        location.name
+    ).then((weather) => {
 
         return {
 
@@ -307,6 +422,39 @@ function runPromiseRaceExample(): void {
         console.log('\nPROMISE.RACE COMPLETED');
         console.log('======================================');
 
+    });
+
+}
+
+askForMyCity()
+    .then((city) => {
+
+        if (!city) {
+            throw new Error(
+                'Please enter a city.'
+            );
+        }
+
+        return getCoordinates(city);
+        
+    })
+    .then((location) => {
+
+        console.log(
+            `Location found: ${location.name}` +
+            `${location.country ? `, ${location.name}`: ''} `
+        );
+
+        // normal chaining demo
+        return runPromiseChainExample(location)
+
+            .then(() => {
+
+                return runPromiseAllExample(location);
+            })
+            .then(() => {
+                return runPromiseRaceExample(location);
+            });
     })
     .catch((error) => {
 
@@ -323,7 +471,3 @@ function runPromiseRaceExample(): void {
         }
 
     });
-
-}
-
-runPromiseRaceExample();

@@ -4,7 +4,7 @@ import * as https from 'https';
 
 import {
     WEATHER_API_URL,
-    LOCATION_NAME,
+    GEOCODING_API_URL,
     NEWS_API_URL
 } from './config'
 
@@ -12,7 +12,9 @@ import type {
     NewsApiResponse,
     NewsPost,
     WeatherApiResponse,
-    WeatherData
+    WeatherData,
+    GeocodingApiResponse,
+    GeocodingResult
 } from './types'
 
 import {
@@ -20,15 +22,119 @@ import {
     displayError
 } from './display'
 
+import {
+    askForMyCityCallback
+} from './input'
 
+function getCoordinates(
+    city: string,
+    callback: (error : Error | null, location?: GeocodingResult) => void
+): void {
+
+    console.log(`Searching for ${city}...`)
+
+        const url = `${GEOCODING_API_URL}?name=${encodeURIComponent(city)}&count=1&language=en&format=json`;
+
+        const request = https.get(url, (response) => {
+
+            let data = '';
+
+            response.setEncoding('utf8');
+
+            response.on('data', (chunk) => {
+                data += chunk;
+
+            });
+
+            response.on('end', () => {
+
+                try {
+    
+                    if (
+                        response.statusCode === undefined ||
+                        response.statusCode < 200 ||
+                        response.statusCode >= 300
+                    ) {
+                        callback(
+                            new Error(
+                                `Location request failed with status code: ${response.statusCode}`
+                            )
+                        );
+    
+                        return;
+                    }
+    
+                    const parseData: GeocodingApiResponse = JSON.parse(data);
+    
+                    const location = parseData.results?.[0];
+
+                    if (!location) {
+
+                        callback(
+                            new Error(
+                                `Could not find a location matching '${city}'.`
+                            )
+                        );
+
+                        return;
+                    }
+
+                    callback(null, location);
+
+                } catch (error) {
+
+                    if (error instanceof Error) {
+
+                        callback(error);
+
+                    } else {
+
+                        callback(
+                            new Error(
+                                'Unable to get location data.'
+                            )
+                        );
+                    }
+                }
+            });
+
+        });
+
+        request.setTimeout(10_000, () => {
+
+            request.destroy(
+                new Error('Location request timed out.')
+            );
+        });
+        
+        request.on('error', (error) => {
+
+            callback(
+                new Error(
+                    `Unable to retrieve location: ${error.message}`
+                )
+            );
+        });
+       
+    
+}
 
 function getWeather(
+    latitude: number,
+    longitude: number,
+    locationName: string,
     callback: (error: Error | null, data?: WeatherData) => void
 ): void {
 
-    console.log(`Fetching weather for ${LOCATION_NAME}...`);
+    console.log(`Fetching weather for ${locationName}...`);
 
-    https.get(WEATHER_API_URL, (response) => {
+    const url = `${WEATHER_API_URL}` +
+    `?latitude=${latitude}` +
+    `&longitude=${longitude}` +
+    `&current=temperature_2m, apparent_temperature,wind_speed_10m,weather_code`;
+
+
+    https.get(url, (response) => {
 
         let data = '';
 
@@ -210,55 +316,119 @@ function getNews(
 });*/}
 
 // callback hell
-getWeather((weatherError, weather) => {
+askForMyCityCallback((city) => {
 
-    if (weatherError) {
+    if (!city) {
 
         displayError(
-            `Unable to fetch weather: ${weatherError.message}`
+            'Please enter a city.'
         );
 
         return;
     }
 
-    if (!weather) {
+    getCoordinates(
+        city,
+        (locationError, location) => {
 
-        displayError(
-            `Weather data was not returned.`
-        );
+            if(locationError) {
+                displayError(
+                    locationError.message
+                );
 
-        return;
-    }
+                return
+            }
 
-    getNews((newsError, posts) => {
+            if (!location) {
+                displayError(
+                    'Location data was not returned.'
+                );
 
-        if (newsError) {
+                return;
+            }
 
-            displayError(
-                `Unable to fetch news: ${newsError.message}`
+            console.log(
+                `\nLocation found: ${location.name}` +
+                `${location.country ? `, ${location.country}` : ''}`
             );
 
-            return;
-        }
+            getWeather(
+                location.latitude,
+                location.longitude,
+                location.name,
 
-        if (!posts) {
+                (weatherError, weather) => {
 
-            displayError(
-                'News data was not returned.'
+                    if (weatherError) {
+
+                        displayError(
+                            `Unable to fetch weather: ${weatherError.message}`
+                        );
+
+                        return;
+                    }
+
+
+                    if (!weather) {
+
+                        displayError(
+                            "Weather data was not returned."
+                        );
+
+                        return;
+                    }
+
+
+                    getNews((newsError, posts) => {
+
+                        if (newsError) {
+
+                            displayError(
+                                `Unable to fetch news: ${newsError.message}`
+                            );
+
+                            return;
+                        }
+
+
+                        if (!posts) {
+
+                            displayError(
+                                "News data was not returned."
+                            );
+
+                            return;
+                        }
+
+
+                        // ===================================
+                        // CHANGED: Dynamic location name
+                        // ===================================
+
+                        displayDashboard(
+                            location.name,
+                            weather,
+                            posts
+                        );
+
+
+                        console.log(
+                            "CALLBACK VERSION COMPLETED"
+                        );
+
+                        console.log(
+                            "======================================"
+                        );
+
+                    });
+
+                }
+
             );
 
-            return;
         }
 
-        displayDashboard(
-            LOCATION_NAME,
-            weather,
-            posts
-        );
-
-        console.log('CALLBACK VERSION COMPLETED');
-        console.log('======================================');
-
-    });
+    );
 
 });
+    

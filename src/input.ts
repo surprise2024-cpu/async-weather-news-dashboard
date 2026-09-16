@@ -20,3 +20,25 @@ export function askForMyCity(): Promise<string> {
         );
     });
 }
+
+export function askForMyCityCallback(
+    callback: (city: string) => void
+): void {
+    const r1 = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+    });
+
+
+
+    r1.question(
+        'Enter the name of the city you want the weather of: ',
+        (answer) => {
+
+            r1.close();
+
+            callback(answer.trim());
+        }
+    );
+    
+}
