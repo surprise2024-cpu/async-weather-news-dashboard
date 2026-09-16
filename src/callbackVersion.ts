@@ -196,39 +196,6 @@ function getWeather(
 
 }
 
-{/*getWeather((error, weather) => {
-
-    if (error) {
-
-        console.error(
-            `[ERROR] Unable to fetch weather: ${error.message}`
-        );
-
-        return;
-    }
-
-    if (!weather) {
-
-        console.error(
-            '[ERROR] Weather data was not returned.'
-        );
-
-        return;
-    }
-
-    console.log('\n===============================');
-    console.log('WEATHER');
-    console.log('===============================');
-
-    console.log(`Location: ${LOCATION_NAME}`);
-    console.log(`Temperature: ${weather.temperature}°C`);
-    console.log(`Feels Like: ${weather.apparentTemperature}°C`);
-
-    console.log(`Wind speed: ${weather.windSpeed} km/h`);
-    console.log(`Weather Code: ${weather.weatherCode}`);
-
-});*/}
-
 function getNews(
     callback: (error: Error | null, data?: NewsPost[]) => void
 ): void {
@@ -284,37 +251,6 @@ function getNews(
         callback(error);
     });
 }
-
-// Testing news callback function
-{/*getNews((error, posts) => {
-
-    if (error) {
-
-        console.error(
-            `[ERROR] Unable to fetch news: ${error.message}`
-        );
-
-        return;
-    }
-
-    if (!posts) {
-
-        console.error(
-            '[ERROR] News data was not returned.'
-        );
-
-        return;
-    }
-
-    console.log('\n===============================');
-    console.log('NEWS HEADLINES');
-    console.log('===============================');
-
-    posts.forEach((post, index) => {
-        console.log(`${index + 1}. ${post.title}`);
-    });
-
-});*/}
 
 // testing all functions
 askForMyCityCallback((city) => {

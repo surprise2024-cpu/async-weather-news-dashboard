@@ -61,6 +61,7 @@ export function displayError(
 
 export function getWeatherCondition(code: number): string {
 
+    // Record contains key-value pairs (key = number/value = text)
     const conditions: Record<number, string> = {
         "0": "Clear sky",
         "1": "Mainly clear",
@@ -92,6 +93,7 @@ export function getWeatherCondition(code: number): string {
         "99": "Thunderstorm with heavy hail"
     }
 
+    // look inside the conditions object using the weather code received.
     return conditions[code] ?? 'Unknow weather condition';
-
+    // try to find the weather condition, if it doesn't exist return (unknown weather condition)
 }

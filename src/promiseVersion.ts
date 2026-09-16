@@ -195,34 +195,6 @@ function getWeather(
     });
 }
 
-// temporary test for the function
-{/*getWeather()
-    .then((weather) => {
-
-        console.log('\nWEATHER');
-        console.log('=======================================');
-
-        console.log(`Location: ${LOCATION_NAME}`);
-        console.log(`Temperature: ${weather.temperature}°C`);
-        console.log(`Feels Like: ${weather.apparentTemperature}°C`);
-        console.log(`Wind Speed: ${weather.windSpeed} km/h`);
-        console.log(`Weather Code: ${weather.weatherCode}`);
-
-    })
-    .catch((error) => {
-
-        if (error instanceof Error) {
-
-            console.error(`[ERROR] Unable to fetch weather: ${error.message}`);
-        } else {
-
-            console.error(
-                '[ERROR] Unknown weather error occurred.'
-            );
-        }
-    });*/}
-
-
 function getNews(): Promise<NewsPost[]> {
 
     return new Promise((resolve, reject) => {
