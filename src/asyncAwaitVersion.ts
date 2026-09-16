@@ -4,17 +4,27 @@ import * as https from 'https'
 
 import {
     WEATHER_API_URL,
-    LOCATION_NAME,
+    GEOCODING_API_URL,
     NEWS_API_URL
 } from './config'
+
+import {
+    askForMyCity
+} from './input'
 
 import type {
     NewsApiResponse,
     NewsPost,
     WeatherApiResponse,
-    WeatherData
+    WeatherData,
+    GeocodingApiResponse,
+    GeocodingResult
 } from './types'
-import { displayDashboard, displayError } from './display';
+
+import { 
+    displayDashboard, 
+    displayError 
+} from './display';
 
 function getWeather(): Promise<WeatherData> {
 
