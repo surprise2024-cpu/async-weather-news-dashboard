@@ -46,9 +46,7 @@ Built-in Node.js HTTPS module used for HTTP requests.
 Example: 
 
 ```ts
-
-    https.get(url, callback);
-
+https.get(url, callback);
 ```
 
 ### Open-Meteo API
@@ -177,19 +175,27 @@ Example:
 
 ### Callback Version demonstration
 
-![callback demo]()
+![callback demo](/src/assets/callback-version.png)
 
 ### Promise Version demonstration
 
-![callback demo]()
+#### Promise Chaining
+
+![promise chaining demo](/src/assets/promise-chaining.png)
+
+#### Promise.all()
+
+![promise all demo](/src/assets/promise-all-version2.0.png)
+
+#### Promise.race()
+
+![promise race demo](/src/assets/promise-race-version.png)
 
 ### Async/Await Version demonstration
 
-![callback demo]()
+![asyn & await demo](/src/assets/async-await-version.png)
 
-
-
-
+---
 
 ## Conclusion
 
