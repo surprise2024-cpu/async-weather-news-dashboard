@@ -10,7 +10,7 @@ export function askForMyCity(): Promise<string> {
     return new Promise((resolve) => {
 
         r1.question(
-            'Enter the name of the city you want the weather of: ',
+            '\nEnter the name of the city you want the weather of: ',
             (answer) => {
 
                 r1.close();
@@ -32,7 +32,7 @@ export function askForMyCityCallback(
 
 
     r1.question(
-        'Enter the name of the city you want the weather of: ',
+        '\nEnter the name of the city you want the weather of: ',
         (answer) => {
 
             r1.close();
