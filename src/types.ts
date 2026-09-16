@@ -17,6 +17,18 @@ export interface WeatherData {
     weatherCode: number;
 }
 
+// structure of location data
+export interface GeocodingResult {
+    name: string;
+    latitude: number;
+    longitude: number;
+    country?: string;
+}
+
+export interface GeocodingApiResponse {
+    results?: GeocodingResult[];
+}
+
 // represents one post/headline coming from DummyJSON API
 export interface NewsPost {
     id: number;
