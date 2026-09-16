@@ -367,7 +367,7 @@ function runPromiseAllExample(
             posts
         );
 
-        console.log('PROMISE CHAINING COMPLETED');
+        console.log('PROMISE.ALL COMPLETED');
         console.log('======================================');
 
     });
