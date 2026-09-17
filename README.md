@@ -181,11 +181,11 @@ Example:
 
 #### Promise Chaining
 
-![promise chaining demo](/src/assets/promise-chaining.png)
+![promise chaining demo](/src/assets/promise-chaining-version.png)
 
 #### Promise.all()
 
-![promise all demo](/src/assets/promise-all-version2.0.png)
+![promise all demo](/src/assets/promise-all-version.png)
 
 #### Promise.race()
 
