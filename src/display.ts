@@ -29,7 +29,7 @@ export function displayDashboard(
     console.log('\nWEATHER');
     console.log('--------------------------------------');
 
-    console.log(`\nLocation: ${location}°C`);
+    console.log(`\nLocation: ${location}`);
     console.log(`Temperature: ${weather.temperature}°C`);
     console.log(`Feels Like: ${weather.apparentTemperature}°C`);
     console.log(`Wind Speed: ${weather.windSpeed} km/h`);
