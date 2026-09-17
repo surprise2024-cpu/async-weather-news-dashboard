@@ -1,19 +1,8 @@
-import * as https from 'https'
-
-import {
-    WEATHER_API_URL,
-    GEOCODING_API_URL,
-    NEWS_API_URL
-} from './config'
 
 // imports are only being used as types, not actual JavaScript values.
 import type {
-    NewsApiResponse,
     NewsPost,
-    WeatherApiResponse,
-    WeatherData,
-    GeocodingApiResponse,
-    GeocodingResult
+    WeatherData
 } from './types'
 
 export function displayDashboard(
